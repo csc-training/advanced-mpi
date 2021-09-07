@@ -11,7 +11,7 @@ solve the problem.
 The exercise material can be downloaded with the command
 
 ```
-git clone https://github.com/csc-training/mpi-introduction.git
+git clone https://github.com/csc-training/advanced-mpi.git
 ```
 
 If you have a GitHub account you can also **Fork** this repository and clone then your fork.
@@ -74,6 +74,21 @@ mpicc -o my_mpi_exe test.c
 
 The wrapper commands include automatically all the flags needed for building
 MPI programs.
+
+### HDF5
+
+In order to use HDF5 in Puhti, you need the load the HDF5 module with MPI I/O support:
+```
+module load hdf5/1.10.4-mpi
+```
+When building programs, `-lhdf5` needs to be added to linker flags, e.g.
+```
+mpif90 -o my_hdf5_exe test.f90 -lhdf5
+```
+or setting `LDFLAGS` *etc.* in a Makefile:
+```
+LDFLAGS=... -lhdf5
+```
 
 #### Running in Puhti
 
