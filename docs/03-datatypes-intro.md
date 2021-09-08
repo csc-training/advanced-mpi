@@ -60,7 +60,7 @@ lang:   en
 
 - A new datatype is created from existing ones with a datatype constructor 	
 	- Several routines for different special cases
-- A new datatype must be committed before using it
+- A new datatype must be committed before using it in communication
     - **`MPI_Type_commit`(`newtype`{.input})**
 - A type should be freed after it is no longer needed
     - **`MPI_Type_free`(`newtype`{.input})**
