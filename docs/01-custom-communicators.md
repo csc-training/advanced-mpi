@@ -105,7 +105,6 @@ MPI_Bcast(sendbuf, 8, MPI_INT, 0, subcomm);
 <div class=column>
 Before broadcast:
 ![](img/colorcomm1.svg){width=90%}
-<p>
 After broadcast:
 ![](img/colorcomm2.svg){width=90%}
 </div>
