@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	printf("%7d    %8.3f        %8.3f", bytes, mean_bw, min_bw);
 	mean_bw = 1.0e-6 * bytes / nr_times[n].mean_time; 
 	min_bw = 1.0e-6 * bytes / nr_times[n].max_time; 
-	printf("          %8.3f         %8.3f\n", bytes, mean_bw, min_bw);
+	printf("          %8.3f         %8.3f\n", mean_bw, min_bw);
       }
 
     }    
