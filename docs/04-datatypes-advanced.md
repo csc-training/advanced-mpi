@@ -151,7 +151,7 @@ disp[0] = 0;
 
 - Sending of an array of the `ParticleStruct` structures may have a
   portability issue: it assumes that array elements are packed in memory
-    - Implicit assumption: the extent of the datatype was the same as the
+    - Implicit assumption: the **extent** of the datatype was the same as the
       size of the C struct
     - This is not necessarily the case
 - If there are gaps in memory between the successive structures, sending
@@ -163,12 +163,16 @@ disp[0] = 0;
 
 # Sending multiple elements: Extent
 
-- Sending multiple user-defined types at once may not behave as expected
-- The *lower bound* describes where the datatype starts
-    - LB: min(displacement)
-- The *extent* describes the stride at which contiguous elements are read
-  or written when sending multiple elements
-    - extent = max(displacement + size) - LB + padding
+- When communicating multiple elements, MPI uses the concept of
+  extent
+     - next element is read or write *extent* bytes apart from the
+       previous one in the buffer
+- Extent is determined from the displacements and sizes of the basic
+  types in the typemap
+    - The lower bound (LB) = min(displacement)
+    - Extent = max(displacement + size) - LB + padding
+- Communicating multiple user-defined types at once may not behave as
+  expected if there are gaps in the beginning or end of the derived type
 
 
 # Multiple MPI_TYPE_VECTORs
@@ -258,3 +262,13 @@ MPI_Send(particle, 1000*psize, MPI_BYTE, ...);
 - This time we focused on the most general type specification:
   `MPI_Type_create_struct`
 - Introduced the concepts of extent and typemap
+
+# Further MPI topics
+
+- Using threading with MPI
+- One-sided communication
+- MPI shared memory programming
+- MPI error handling
+- Intercommunicators
+- Point-to-point communication modes
+- Dynamic process creation
