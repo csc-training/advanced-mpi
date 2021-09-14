@@ -324,21 +324,6 @@ call mpi_file_write_all(file, buffer, count, mpi_integer, status, err)
     - It has to be stored and passed as a variable of type
       `integer(MPI_OFFSET_KIND)`
 
-
-# Performance do's and don'ts
-
-- Use collective I/O routines
-    - Collective write can be over hundred times faster than the individual
-      for large arrays!
-
-- Remember to use the correct striping for each file size
-    - Striping can also be set in the `MPI_Info` parameter using the
-      `MPI_Info_set` function:
-      `MPI_Info_set(info, "striping_factor", "20")`
-    - Optimal value system dependent, may be beneficial to benchmark
-- Minimize metadata operations
-
-
 # Summary
 
 - MPI-IO: MPI library automatically handles all communication needed
