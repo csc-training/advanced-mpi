@@ -6,7 +6,7 @@ lang:   en
 ---
 
 
-# Persistent communication {.section}
+# Additional communication schemes {.section}
 
 # Persistent communication
 
@@ -25,26 +25,24 @@ lang:   en
 # Persistent point-to-point communication
 
 ```c
-MPI_Request recv_obj, send_obj;
+MPI_Request recv_req, send_req;
 ...
 // Initialize send/request objects
-MPI_Recv_init(buf1, cnt, MPI_DOUBLE, src, tag, MPI_COMM_WORLD, &recv_obj);
-MPI_Send_init(buf2, cnt, MPI_DOUBLE, dst, tag, MPI_COMM_WORLD, &send_obj);
-for (i=1; i<BIGNUM; i++){
+MPI_Recv_init(buf1, cnt, MPI_DOUBLE, src, tag, MPI_COMM_WORLD, &recv_req);
+MPI_Send_init(buf2, cnt, MPI_DOUBLE, dst, tag, MPI_COMM_WORLD, &send_req);
+for (int i=1; i<BIGNUM; i++){
 // Start communication described by recv_obj and send_obj
-    MPI_Start(&recv_obj);
-    MPI_Start(&send_obj);
+    MPI_Start(&recv_req);
+    MPI_Start(&send_req);
     // Do work, e.g. update the interior domains 
     ...
     // Wait for send and receive to complete
-    MPI_Wait(&send_obj, MPI_STATUS_IGNORE);
-    MPI_Wait(&recv_obj, MPI_STATUS_IGNORE);
+    MPI_Wait(&send_req, MPI_STATUS_IGNORE);
+    MPI_Wait(&recv_req, MPI_STATUS_IGNORE);
 }
 //Clean up the requests
-MPI_Request_free (&recv_obj); MPI_Request_free (&send_obj);
+MPI_Request_free (&recv_req); MPI_Request_free (&send_req);
 ```
-
-# Neighborhood collectives {.section}
 
 # Neighborhood collectives
 
@@ -130,8 +128,10 @@ for (int i=0; i < ndims; i++) {
   MPI_Cart_shift(cart_comm, i, 1, &nghbrs[i][0], &nghbrs[i][1]);
 
   recv_offset = i * 2 * count;
-  MPI_Irecv(recvbuf + recv_offset, count, MPI_INT, nghbrs[i][0], 1, cart_comm, &reqs[i*4];
-  MPI_Irecv(recvbuf + recv_offset + 1, count, MPI_INT, nghbrs[i][1], 1, cart_comm, &reqs[i*4 + 1]);
+  MPI_Irecv(recvbuf + recv_offset, count, MPI_INT, nghbrs[i][0], 1, 
+            cart_comm, &reqs[i*4];
+  MPI_Irecv(recvbuf + recv_offset + count, count, MPI_INT, nghbrs[i][1], 1, 
+            cart_comm, &reqs[i*4 + 1]);
   MPI_Isend(sendbuf, count, MPI_INT, nghbrs[i][0], 1, cart_comm, &reqs[i*4 + 2]);
   MPI_Isend(sendbuf, count, MPI_INT, nghbrs[i][1], 1, cart_comm, &reqs[i*4 + 3]);
 }
@@ -189,10 +189,14 @@ for (int i=0; i < ndims; i++) {
   MPI_Cart_shift(cart_comm, i, 1, &nghbrs[i][0], &nghbrs[i][1]);
 
   offset = i * 2 * count;
-  MPI_Irecv(recvbuf + offset, count, MPI_INT, nghbrs[i][0], 1, cart_comm, &reqs[i*4];
-  MPI_Irecv(recvbuf + offset + 1, count, MPI_INT, nghbrs[i][1], 1, cart_comm, &reqs[i*4 + 1]);
-  MPI_Isend(sendbuf + offset, count, MPI_INT, nghbrs[i][0], 1, cart_comm, &reqs[i*4 + 2]);
-  MPI_Isend(sendbuf + offset + 1, count, MPI_INT, nghbrs[i][1], 1, cart_comm, &reqs[i*4 + 3]);
+  MPI_Irecv(recvbuf + offset, count, MPI_INT, nghbrs[i][0], 1, 
+            cart_comm, &reqs[i*4];
+  MPI_Irecv(recvbuf + offset + count, count, MPI_INT, nghbrs[i][1], 1, 
+            cart_comm, &reqs[i*4 + 1]);
+  MPI_Isend(sendbuf + offset, count, MPI_INT, nghbrs[i][0], 1, 
+            cart_comm, &reqs[i*4 + 2]);
+  MPI_Isend(sendbuf + offset + count, count, MPI_INT, nghbrs[i][1], 1, 
+            cart_comm, &reqs[i*4 + 3]);
 }
 MPI_Waitall(ndims*4, reqs, MPI_STATUSES_IGNORE);
 ```
