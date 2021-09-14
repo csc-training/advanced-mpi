@@ -161,7 +161,7 @@ end program output
 
 `MPI_File_seek(fhandle, disp, whence)`
   : `disp`{.input}
-    : displacement in bytes (with the default file view)
+    : displacement in bytes
 
     `whence`{.input}
     : `MPI_SEEK_SET`: the pointer is set to `disp`
