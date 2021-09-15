@@ -1,29 +1,35 @@
 program datatype_struct
-  use mpi
+  use mpi_f08
+  use iso_fortran_env, only : REAL64
   implicit none
+
+  integer, parameter :: n = 1000, cnt=3, reps=10000
+
   type particle
      real :: coords(3)
      integer :: charge
      character(len=2) :: label
   end type particle
-  integer, parameter :: n = 1000
-  integer :: i, ierror,  myid,  ntasks, tag
+
   type(particle) :: particles(n)
 
-  integer, parameter :: cnt=3
-  integer:: particle_mpi_type, temp_type
-  integer:: types(cnt),blocklen(cnt)
-  integer(KIND=MPI_ADDRESS_KIND) :: disp(cnt)
-  integer(KIND=MPI_ADDRESS_KIND) :: lb1, lb2, extent
-  integer :: nbytes
-  real(8) :: t1,t2
+  integer :: i, ierror,  myid,  ntasks, tag
 
-  call MPI_INIT(ierror)
-  call MPI_COMM_RANK(MPI_COMM_WORLD, myid, ierror)
-  call MPI_COMM_SIZE(MPI_COMM_WORLD, ntasks, ierror)
+  type(mpi_datatype) :: particle_mpi_type, temp_type
+  type(mpi_datatype):: types(cnt)
+  integer :: blocklen(cnt)
+  integer(kind=MPI_ADDRESS_KIND) :: disp(cnt)
+  integer(kind=MPI_ADDRESS_KIND) :: lb1, lb2, extent
+  integer :: nbytes
+
+  real(REAL64) :: t1, t2
+
+  call mpi_init(ierror)
+  call mpi_comm_rank(MPI_COMM_WORLD, myid, ierror)
+  call mpi_comm_size(MPI_COMM_WORLD, ntasks, ierror)
 
   ! insert some data for the particle struct
-  if(myid == 0) then
+  if (myid == 0) then
     do i = 1, n
       call random_number(particles(i)%coords)
       particles(i)%charge = 54
@@ -36,26 +42,26 @@ program datatype_struct
   call MPI_GET_ADDRESS(particles(2),lb2,ierror)
   extent = lb2 - lb1
 
-  t1=MPI_WTIME()
+  t1 = mpi_wtime()
   ! send and receive using the MPI_BYTE datatype
   nbytes = n * extent
   if(myid == 0) then
-     do i=1,1000
-        call MPI_SEND(particles, nbytes, MPI_BYTE, 1, i, &
-             MPI_COMM_WORLD,ierror)
+     do i = 1, reps
+        call mpi_send(particles, nbytes, MPI_BYTE, 1, i, &
+                      MPI_COMM_WORLD, ierror)
      end do
   else if(myid == 1) then
-     do i=1, 1000
-        call MPI_RECV(particles, nbytes, MPI_BYTE, 0, i, &
-             MPI_COMM_WORLD, MPI_STATUS_IGNORE, ierror)
+     do i = 1, reps
+        call mpi_recv(particles, nbytes, MPI_BYTE, 0, i, &
+                      MPI_COMM_WORLD, MPI_STATUS_IGNORE, ierror)
      end do
   end if
-  t2=MPI_WTIME()
+  t2=mpi_wtime()
 
-  write(*,*) "Time: ", myid, (t2-t1) / 1000d0
+  write(*,*) "Time: ", myid, (t2-t1) / reps
   write(*,*) "Check:", myid, particles(n)%label, particles(n)%coords(1), &
                        particles(n)%coords(2), particles(n)%coords(3)
 
-  call MPI_FINALIZE(ierror)
+  call mpi_finalize(ierror)
 
 end program datatype_struct
