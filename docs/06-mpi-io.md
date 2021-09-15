@@ -161,7 +161,7 @@ end program output
 
 `MPI_File_seek(fhandle, disp, whence)`
   : `disp`{.input}
-    : displacement in bytes
+    : displacement in bytes (with the default file view)
 
     `whence`{.input}
     : `MPI_SEEK_SET`: the pointer is set to `disp`
@@ -323,21 +323,6 @@ call mpi_file_write_all(file, buffer, count, mpi_integer, status, err)
   (e.g. "0")
     - It has to be stored and passed as a variable of type
       `integer(MPI_OFFSET_KIND)`
-
-
-# Performance do's and don'ts
-
-- Use collective I/O routines
-    - Collective write can be over hundred times faster than the individual
-      for large arrays!
-
-- Remember to use the correct striping for each file size
-    - Striping can also be set in the `MPI_Info` parameter using the
-      `MPI_Info_set` function:
-      `MPI_Info_set(info, "striping_factor", "20")`
-    - Optimal value system dependent, may be beneficial to benchmark
-- Minimize metadata operations
-
 
 # Summary
 
