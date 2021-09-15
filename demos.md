@@ -1,5 +1,5 @@
 
-Striping example:
+# Striping example:
 
 touch first_file
 lfs getstripe first_file
@@ -9,7 +9,7 @@ lfs setstripe -c 4 experiments
 touch experiments/new_file
 lfs getstripe experiments/new_file
 
-MPI-IO simple writing
+# MPI-IO simple writing
 
  mpif90 mpi_write_at.F90
 
@@ -42,14 +42,15 @@ h5ls py_example.hdf5/DataTwo
 
 
 
-Python hdf5 example
-
+#Python hdf5 example
+``` 
 module load HDF5
 module load biokit
 module load biopythontools
 
 python # start python
-
+``` 
+```
 import h5py
 import numpy as np
 
@@ -77,3 +78,4 @@ with h5py.File(hdf5_name_file, 'a') as hdf5_file: # open an hdf5 file in write m
 ...      nsdet.attrs['minvalue']=np.min(np.min(M2))
 ...      nsdet.attrs['average']=np.mean(np.mean(M2))
 ...      nsdet.attrs['var']='M2'
+``` 
