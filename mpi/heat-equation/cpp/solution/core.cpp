@@ -8,34 +8,25 @@
 void exchange(Field& field, const ParallelData parallel)
 {
 
-    // Send to up, receive from down
-    double* sbuf = field.temperature.data(1, 0);
-    double* rbuf  = field.temperature.data(field.nx + 1, 0);
-    MPI_Sendrecv(sbuf, 1, parallel.rowtype, parallel.nghbrs[0][0], 11,
-                 rbuf, 1, parallel.rowtype, parallel.nghbrs[0][1], 11,
-                 parallel.comm, MPI_STATUS_IGNORE);
+    MPI_Datatype types[4] = {parallel.rowtype, parallel.rowtype,
+                             parallel.columntype, parallel.columntype};
+    int counts[4] = {1, 1, 1, 1};
+    MPI_Aint sdisps[4];
+    MPI_Aint rdisps[4];
 
-    // Send to down, receive from up
-    sbuf = field.temperature.data(field.nx, 0);
-    rbuf = field.temperature.data();
-    MPI_Sendrecv(sbuf, 1, parallel.rowtype, parallel.nghbrs[0][1], 12,
-                 rbuf, 1, parallel.rowtype, parallel.nghbrs[0][0], 12,
-                 parallel.comm, MPI_STATUS_IGNORE);
+    sdisps[0] = (field.ny + 2) * sizeof(double); // Second row
+    sdisps[1] = field.nx * (field.ny + 2) * sizeof(double); // Second last row
+    sdisps[2] = 1 * sizeof(double); // Second column
+    sdisps[3] = field.ny * sizeof(double); // Second last column
 
-    // Send to left, receive from right
-    sbuf = field.temperature.data(0, 1);
-    rbuf  = field.temperature.data(0, field.nx + 1);
-    MPI_Sendrecv(sbuf, 1, parallel.columntype, parallel.nghbrs[1][0], 13,
-                 rbuf, 1, parallel.columntype, parallel.nghbrs[1][1], 13,
-                 parallel.comm, MPI_STATUS_IGNORE);
+    rdisps[0] = 0; // First row
+    rdisps[1] = (field.nx + 1) * (field.ny + 2) * sizeof(double); // Last row
+    rdisps[2] = 0; // First column
+    rdisps[3] = (field.ny + 1) * sizeof(double); // Last column
 
-    // Send to right, receive from left
-    sbuf = field.temperature.data(0, field.nx);
-    rbuf = field.temperature.data();
-    MPI_Sendrecv(sbuf, 1, parallel.columntype, parallel.nghbrs[1][1], 14,
-                 rbuf, 1, parallel.columntype, parallel.nghbrs[1][0], 14,
-                 parallel.comm, MPI_STATUS_IGNORE);
-
+    MPI_Neighbor_alltoallw(field.temperature.data(), counts, sdisps, types,
+                           field.temperature.data(), counts, rdisps, types,
+                           parallel.comm);
 }
 
 // Update the temperature values using five-point stencil */
