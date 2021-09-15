@@ -20,4 +20,4 @@ current task. Your program should work as follows:
    ([skeleton.cpp](skeleton.cpp) or [skeleton.F90](skeleton.F90)) 
    as a starting point. 
 
-2. Write a version that uses `MPI_Startall` and `MPI_Waitall` instead of `MPI_Starts` and `MPI_Wait`s.
+2. Write a version that uses `MPI_Startall` and `MPI_Waitall` instead of `MPI_Start`s and `MPI_Wait`s.
