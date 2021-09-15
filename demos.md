@@ -26,8 +26,6 @@ lfs getstripe experiments/new_file
 ```
 h5ls py_example.hdf5
 
-h5ls python_demo.hdf5
-
 h5ls py_example.hdf5/DataTwo
 
 h5dump -d /DataTwo/Matrix_two py_example.hdf5
