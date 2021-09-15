@@ -33,5 +33,5 @@ the [usage of Cartesian communicator](README_cartesian.md) implemented.
    use temporary buffers for communication. Create appropriate
    datatype and utilize it in I/O related communication. Note that you
    need also the coordinates of processes in the cartesian grid in
-   order to read from / write to correct part of the global
+   order to read from / write to the correct part of the global
    temperature field.
