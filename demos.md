@@ -1,5 +1,5 @@
-
-# Striping example:
+# Parallel I/O
+### Striping example:
 
 ```
 touch first_file
@@ -10,7 +10,7 @@ lfs setstripe -c 4 experiments
 touch experiments/new_file
 lfs getstripe experiments/new_file
 ```
-# MPI-IO simple writing
+### MPI-IO simple writing
 ```
  mpif90 mpi_write_at.F90
 
@@ -21,7 +21,7 @@ lfs getstripe experiments/new_file
  hexdump -e '16 "%02d ""\n"' test
 ```
 
-# Hdf5 Tools Example
+### Hdf5 Command Line Tools Example
 
 ```
 h5ls py_example.hdf5
@@ -45,7 +45,7 @@ h5ls py_example.hdf5/DataTwo
 ```
 
 
-# Python hdf5 example
+### Python hdf5 example
 ``` 
 module load HDF5
 module load biokit
