@@ -1,4 +1,4 @@
-## Message chain
+## Message chain with persistent communication
 
 Write a program where every MPI task sends data to the next one.
 Let `ntasks` be the number of the tasks, and `myid` the rank of the
@@ -17,7 +17,7 @@ current task. Your program should work as follows:
 1. Implement the program described above using persistent communication, *i.e.* 
    `MPI_Send_init`, `MPI_Recv_init`, `MPI_Start` and `MPI_Wait`. 
    You may start from scratch or use the skeleton code
-   ([c/skeleton.c](cpp/skeleton.cpp) or [fortran/skeleton.F90](fortran/skeleton.F90)) 
+   ([skeleton.cpp](skeleton.cpp) or [skeleton.F90](skeleton.F90)) 
    as a starting point. 
 
 2. Write a version that uses `MPI_Startall` and `MPI_Waitall` instead of `MPI_Starts` and `MPI_Wait`s.
