@@ -1,6 +1,7 @@
 
 # Striping example:
 
+```
 touch first_file
 lfs getstripe first_file
 
@@ -8,9 +9,9 @@ mkdir stripe_exp
 lfs setstripe -c 4 experiments
 touch experiments/new_file
 lfs getstripe experiments/new_file
-
+```
 # MPI-IO simple writing
-
+```
  mpif90 mpi_write_at.F90
 
  srun  --job-name=example --account=project_2002078  --partition=test --time=00:15:00 --ntasks=2 ./a.out
@@ -18,9 +19,11 @@ lfs getstripe experiments/new_file
  less test
  hexdump test
  hexdump -e '16 "%02d ""\n"' test
+```
 
-Hdf5 Tools Example
+# Hdf5 Tools Example
 
+```
 h5ls py_example.hdf5
 
 h5ls python_demo.hdf5
@@ -39,7 +42,7 @@ h5dump -a "Matrix_one/var" py_example.hdf5
 h5mkgrp py_example.hdf5 "/DataTwo/test"
 
 h5ls py_example.hdf5/DataTwo
-
+```
 
 
 #Python hdf5 example
