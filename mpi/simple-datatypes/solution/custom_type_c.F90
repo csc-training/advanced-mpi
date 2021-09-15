@@ -4,7 +4,8 @@ program datatype1
 
   integer, dimension(8,8) :: array
   integer :: rank, ierr
-  !TODO: declare variable for datatype
+  type(mpi_datatype) :: subarray
+  integer, dimension(2) :: sizes, subsizes, offsets
   integer :: i, j
 
   call mpi_init(ierr)
@@ -28,12 +29,20 @@ program datatype1
      end do
   end if
 
+  ! create datatype
+  sizes = 8
+  subsizes = 4
+  offsets = 2
+  call mpi_type_create_subarray(2, sizes, subsizes, offsets, MPI_ORDER_FORTRAN, MPI_INTEGER, subarray, ierr)
+  call mpi_type_commit(subarray, ierr)
 
-  !TODO: create datatype 
-
-  !TODO: communicate with datatype
-
-  !TODO: free datatype
+  ! send first row of matrix
+  if (rank == 0) then
+     call mpi_send(array(1, 1), 1, subarray, 1, 1, MPI_COMM_WORLD, ierr)
+  else if (rank == 1) then
+     call mpi_recv(array(1, 1), 1, subarray, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE, &
+          ierr)
+  end if
 
   ! Print out the result
   if (rank == 1) then
@@ -43,7 +52,7 @@ program datatype1
      end do
   end if
 
-
+  call mpi_type_free(subarray, ierr)
   call mpi_finalize(ierr)
 
 end program datatype1

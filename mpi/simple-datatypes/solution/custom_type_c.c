@@ -5,12 +5,12 @@ int main(int argc, char **argv)
 {
     int rank;
     int array[8][8];
-    //TODO: Declare a variable storing the MPI datatype
-
+    MPI_Datatype subarray;
     int i, j;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
 
     // Initialize arrays
     if (rank == 0) {
@@ -37,13 +37,23 @@ int main(int argc, char **argv)
         }
     }
 
-    //TODO: Create datatype 
 
-    //TODO: Send data
+    int sizes[2] = {8, 8};
+    int subsizes[2] = {4, 4};
+    int offsets[2] = {2, 2};
+    // Create datatype
+    MPI_Type_create_subarray(2, sizes, subsizes, offsets, MPI_ORDER_C, MPI_INT, &subarray);
+    MPI_Type_commit(&subarray);
 
-    //TODO: Free datatype
+    // Send first column of matrix
+    if (rank == 0) {
+        MPI_Send(&array[0][0], 1, subarray, 1, 1, MPI_COMM_WORLD);
+    } else if (rank == 1) {
+        MPI_Recv(&array[0][0], 1, subarray, 0, 1, MPI_COMM_WORLD,
+                 MPI_STATUS_IGNORE);
+    }
 
-    // Print out the result on rank 1
+    // Print out the result
     if (rank == 1) {
         printf("Received data\n");
         for (i = 0; i < 8; i++) {
@@ -54,6 +64,7 @@ int main(int argc, char **argv)
         }
     }
 
+    MPI_Type_free(&subarray);
     MPI_Finalize();
 
     return 0;
