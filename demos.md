@@ -45,7 +45,7 @@ h5ls py_example.hdf5/DataTwo
 
 ### Python hdf5 example
 ``` 
-module load HDF5
+module load hdf5
 module load biokit
 module load biopythontools
 
