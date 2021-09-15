@@ -14,4 +14,6 @@ b)
 
 ![](img/indexed.png)
 
+c)
 
+![](img/subarray.png)
