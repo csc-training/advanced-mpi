@@ -20,9 +20,10 @@ program basic
 
   message = myid
 
-  ! TODO: create a cartesian communicator
-  ! and determine the source and destination ranks 
-  ! with the help of MPI_Cart_shift
+  ! TODO: set source and destination ranks 
+  ! Treat boundaries with MPI_PROC_NULL
+  ! You may utilize also Cartesian topology and MPI_Cart_shift
+  ! instead manual determination
 
 
   ! end TODO
@@ -31,13 +32,11 @@ program basic
   call mpi_barrier(mpi_comm_world, rc)
   t0 = mpi_wtime()
 
-  ! TODO: Send messages
+  ! TODO: Send and receive messages
 
   write(*,'(A10,I3,A20,I8,A,I3,A,I3)') 'Sender: ', myid, &
           ' Sent elements: ',size, &
           '. Tag: ', myid+1, '. Receiver: ', destination
-
-  ! TODO: Receive messages
 
   write(*,'(A10,I3,A,I3)') 'Receiver: ', myid, &
           ' First element: ', receiveBuffer(1)

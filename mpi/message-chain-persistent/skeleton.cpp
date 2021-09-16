@@ -12,8 +12,6 @@ int main(int argc, char *argv[])
 
     double t0, t1;
 
-    int source, destination;
-
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &ntasks);
     MPI_Comm_rank(MPI_COMM_WORLD, &myid);
@@ -22,9 +20,12 @@ int main(int argc, char *argv[])
     std::vector<int> message(size, myid);
     std::vector<int> receiveBuffer(size);
 
-    // TODO: create a cartesian communicator
-    // and determine the source and destination ranks 
-    // with the help of MPI_Cart_shift
+    // TODO: set source and destination ranks 
+    // Treat boundaries with MPI_PROC_NULL
+    // You may utilize also Cartesian topology and MPI_Cart_shift
+    // instead manual determination
+
+    int source, destination;
 
 
     // end TODO
@@ -33,12 +34,10 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
 
-    // TODO: Send messages 
+    // TODO: Send and receive messages 
 
     printf("Sender: %d. Sent elements: %d. Tag: %d. Receiver: %d\n",
            myid, size, myid + 1, destination);
-
-    // TODO: Receive messages
 
     printf("Receiver: %d. first element %d.\n",
            myid, receiveBuffer[0]);
