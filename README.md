@@ -13,7 +13,7 @@ The course is part of PRACE Training Center (PTC) activity at CSC.
  - [Communicators and collectives](mpi/communicator)
  - [Cartesian grid process topology](mpi/cartesian-grid)
  - [Message chain with Cartesian communicator](mpi/message-chain-cartesian)
- - [(Bonus) Heat equation with cartesian communicator](heat-equation/README_cartesian.md)
+ - [(Bonus) Heat equation with cartesian communicator](mpi/heat-equation/README_cartesian.md)
 
 ### Persistent and neighborhood communication
 
