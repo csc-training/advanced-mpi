@@ -40,10 +40,15 @@ contains
     integer, intent(in) :: nx, ny
     type(parallel_data), intent(in) :: parallel
 
+    integer :: dims(2), coords(2)
+    logical :: periods(2)
+
     integer :: nx_local, ny_local
 
-    nx_local = nx / sqrt(real(parallel%size))
-    ny_local = ny / sqrt(real(parallel%size))
+    
+    call mpi_cart_get(parallel%comm, 2, dims, periods, coords)
+    nx_local = nx / dims(1)
+    ny_local = ny / dims(2)
 
     field0%dx = DX
     field0%dy = DY
@@ -63,8 +68,8 @@ contains
 
     integer :: nx_local, ny_local
     integer :: world_size
-    integer :: dims(2)
-    logical :: periods(2) = (/.False., .FALSE./)
+    integer :: dims(2) = [0, 0]
+    logical :: periods(2) = [.false., .false.]
     integer, dimension(2) :: sizes, subsizes, offsets
 
     integer :: ierr
@@ -72,17 +77,11 @@ contains
     call mpi_comm_size(MPI_COMM_WORLD, world_size, ierr)
 
     ! Set grid dimensions
-    dims(1) = sqrt(real(world_size))
-    dims(2) = dims(1)
+    call mpi_dims_create(world_size, 2, dims)
     nx_local = nx / dims(1)
     ny_local = ny / dims(2)
 
     ! Ensure that the grid is divisible to the MPI tasks
-    if (dims(1) * dims(2) /= world_size) then
-       write(*,*) 'Cannot make square MPI grid, please use number of CPUs which is power of two', &
-                   dims(1), dims(2), world_size
-       call mpi_abort(MPI_COMM_WORLD, -1, ierr)
-    end if
     if (nx_local * dims(1) /= nx) then
        write(*,*) 'Cannot divide grid evenly to processors in x-direction', &
                    nx_local, dims(1), nx
