@@ -81,9 +81,10 @@ In order to use HDF5 in Puhti, you need the load the HDF5 module with MPI I/O su
 ```
 module load hdf5/1.10.4-mpi
 ```
-When building programs, `-lhdf5` needs to be added to linker flags, e.g.
+When building programs, `-lhdf5` (C/C++) or `-lhdf5_fortran` (Fortran) needs to be added to linker flags, e.g.
 ```
-mpif90 -o my_hdf5_exe test.f90 -lhdf5
+mpicxx -o my_hdf5_exe test.cpp -lhdf5
+mpif90 -o my_hdf5_exe test.f90 -lhdf5_fortran
 ```
 or setting `LDFLAGS` *etc.* in a Makefile:
 ```
