@@ -201,3 +201,7 @@ end if
     - Spokesman strategy
     - Every man for himself
     - Subset of writers/readers
+
+# Web resources
+
+- Lustre documentation in CSC User guide <https://docs.csc.fi/computing/lustre/>
