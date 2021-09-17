@@ -86,7 +86,7 @@ forever.
 5. If you call MPI_Send and there is no matching receive, which of the
    following are possible outcomes? 
    
-A. the message disappears 
+   A. the message disappears 
    B. the send fails with an error
    C. the send waits until a receive is posted (potentially waiting forever)
    D. the message is stored and delivered later on (if possible)
