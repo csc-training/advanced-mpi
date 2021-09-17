@@ -66,8 +66,19 @@ int main(int argc, char **argv)
     types[2] = columntype;
     types[3] = columntype;
 
+#if 1
     // Determine displacements with C pointer arithmetic
-    MPI_Aint disp0; 
+    MPI_Aint disp0 = reinterpret_cast<MPI_Aint> (&array[0][0]);
+    sdisps[0] = reinterpret_cast<MPI_Aint> (&array[1][0]);
+    sdisps[1] = reinterpret_cast<MPI_Aint> (&array[6][0]);
+    sdisps[2] = reinterpret_cast<MPI_Aint> (&array[0][1]);
+    sdisps[3] = reinterpret_cast<MPI_Aint> (&array[0][6]);
+
+    rdisps[0] = reinterpret_cast<MPI_Aint> (&array[0][0]);
+    rdisps[1] = reinterpret_cast<MPI_Aint> (&array[7][0]);
+    rdisps[2] = reinterpret_cast<MPI_Aint> (&array[0][0]);
+    rdisps[3] = reinterpret_cast<MPI_Aint> (&array[0][7]);
+#else
     MPI_Get_address(&array[0][0], &disp0);
     MPI_Get_address(&array[1][0], &sdisps[0]); // second row
     MPI_Get_address(&array[6][0], &sdisps[1]); // second last row
@@ -78,6 +89,7 @@ int main(int argc, char **argv)
     MPI_Get_address(&array[7][0], &rdisps[1]); // last row
     MPI_Get_address(&array[0][0], &rdisps[2]); // first column
     MPI_Get_address(&array[0][7], &rdisps[3]); // last column
+#endif
 
     for (int i=0; i < 4; i++) {
         sdisps[i] -= disp0;
