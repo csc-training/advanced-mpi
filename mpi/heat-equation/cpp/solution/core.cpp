@@ -11,18 +11,24 @@ void exchange(Field& field, const ParallelData parallel)
     MPI_Datatype types[4] = {parallel.rowtype, parallel.rowtype,
                              parallel.columntype, parallel.columntype};
     int counts[4] = {1, 1, 1, 1};
-    MPI_Aint sdisps[4];
-    MPI_Aint rdisps[4];
+    MPI_Aint sdisps[4], rdisps[4], disp0;
 
-    sdisps[0] = (field.ny + 2) * sizeof(double); // Second row
-    sdisps[1] = field.nx * (field.ny + 2) * sizeof(double); // Second last row
-    sdisps[2] = 1 * sizeof(double); // Second column
-    sdisps[3] = field.ny * sizeof(double); // Second last column
+    // Determine displacements
+    disp0 = reinterpret_cast<MPI_Aint> (field.temperature.data(0, 0));
+    sdisps[0] =  reinterpret_cast<MPI_Aint> (field.temperature.data(1, 0));        // Second row
+    sdisps[1] =  reinterpret_cast<MPI_Aint> (field.temperature.data(field.nx, 0)); // Second last row
+    sdisps[2] =  reinterpret_cast<MPI_Aint> (field.temperature.data(0, 1));        // Second column
+    sdisps[3] =  reinterpret_cast<MPI_Aint> (field.temperature.data(0, field.ny)); // Second last column
 
-    rdisps[0] = 0; // First row
-    rdisps[1] = (field.nx + 1) * (field.ny + 2) * sizeof(double); // Last row
-    rdisps[2] = 0; // First column
-    rdisps[3] = (field.ny + 1) * sizeof(double); // Last column
+    rdisps[0] =  reinterpret_cast<MPI_Aint> (field.temperature.data(0, 0));            // First row
+    rdisps[1] =  reinterpret_cast<MPI_Aint> (field.temperature.data(field.nx + 1, 0)); // Last row
+    rdisps[2] =  reinterpret_cast<MPI_Aint> (field.temperature.data(0, 0));            // First column
+    rdisps[3] =  reinterpret_cast<MPI_Aint> (field.temperature.data(0, field.ny + 1)); // Last column
+
+    for (int i=0; i < 4; i++) {
+      sdisps[i] -= disp0;
+      rdisps[i] -= disp0;
+    }
 
     MPI_Neighbor_alltoallw(field.temperature.data(), counts, sdisps, types,
                            field.temperature.data(), counts, rdisps, types,
